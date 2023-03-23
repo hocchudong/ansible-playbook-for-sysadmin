@@ -3,14 +3,106 @@
   hosts: redis
   become: yes
   become_user: root
-  gather_facts: no
+  #gather_facts: no
   vars:
-    hostname: '[% host_name %]'
+    #hostname: '[% host_name %]'
     ipv4: '{{ansible_default_ipv4.address}}'
+    redis_version: "7.0.10"
+    redis_url: "http://10.0.11.173/tools/{{ redis_version }}.tar.gz"
+    redis_dir: "/data/redis-{{ redis_version }}"
+    install_dir: "/data/"
+    redis_conf_dir: "/etc/redis"
+    redis_log_dir: "/data/redis/log"
+    redis_bin_dir: "/data/redis/bin"
+    redis_data_dir: "/data/redis/data"
+    redis_run_dir: "/data/redis/run"
+    redis_lib_dir: "/var/lib/redis"
+    redis_logfile: "/var/log/redis.log"
+    redis_port: "6379"
+    sentinel_port: "26379"
+    redis_bind_loop: 127.0.0.1
   
   tasks:
-    - name: Download redis.rpm file
-      get_url:
-        url: http://10.0.11.173/tools/7.0.10.tar.gz
-        dest: /data/
-        mode: '0644'
+
+    - name: enable ufw
+      ufw: state=disabled
+    
+    - name: Overcommit_memory warnings Fix
+      lineinfile:
+        path: "/etc/sysctl.conf"
+        line: "vm.overcommit_memory = 1"
+      become: true
+      
+    # Fix Transparent Huge Pages warnings
+    - name: Transparent Huge Pages Fix
+      replace:
+        path: /sys/kernel/mm/transparent_hugepage/enabled
+        regexp: '[always] madvise never'
+        replace: 'never'
+      become: true
+      ignore_errors: True
+      
+    - name: Cai dat cac goi phu thuoc 
+      apt:
+        name: "{{ packages }}"
+        state: present
+        update_cache: yes
+      vars:
+        packages:
+        - tar
+        - wget
+        - unzip
+        - gcc
+        - build-essential 
+        - tcl
+        - make
+
+    - name: Create Redis dir's
+      file:
+       path: "{{ item }}"
+       state: directory
+       mode: 0755
+      with_items:
+        - "{{ redis_log_dir }}"
+        - "{{ redis_bin_dir }}"
+        - "{{ redis_data_dir }}"
+        - "{{ redis_run_dir }}"
+      become: true
+
+##################################
+
+    - name: Cai dat redis server
+      apt:
+        name: "{{ packages }}"
+        state: present
+        update_cache: yes
+      vars:
+        packages:
+        - redis-server
+
+    - name: Redis.conf backup 
+      command: cp /etc/redis/redis.conf /etc/redis/redis_backup.conf
+      
+##################################      
+    - name: Copy Redis template
+      template:
+        src: "redis-conf.j2"
+        dest: "{{ redis_conf_dir }}/redis.conf"
+        mode: 0644
+        owner: redis
+        group: redis
+      become: true
+      
+    # - name: Setup Redis Systemd
+      # template:
+        # src: systemd-redis.j2
+        # dest: "/etc/systemd/system/redis.service"
+        # mode: 0644
+      # become: true
+
+    - name: Make sure a service unit is running
+      systemd:
+        name: redis
+        daemon_reload: true
+        state: started
+        
