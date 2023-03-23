@@ -1,10 +1,13 @@
 bind 0.0.0.0
-dir /data/redis-{{ redis_version }}/data
-pidfile /data/redis-{{ redis_version }}/run/redis_6379.pid
-logfile /data/redis-{{ redis_version }}/log/redis.log
+dir {{redis_data_dir}}
+pidfile {{ redis_run_dir }}/redis_6379.pid
+logfile {{ redis_log_dir }}/redis.log
 maxclients 40000
 supervised systemd
 daemonize yes
+
+masterauth "Passw0rd!"
+requirepass "Passw0rd!"
 
 protected-mode yes
 port 6379

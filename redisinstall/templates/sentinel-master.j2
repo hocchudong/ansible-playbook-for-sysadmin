@@ -1,12 +1,11 @@
 protected-mode no
 port 26379
-daemonize yes
-bind 0.0.0.0
-
+daemonize no
 pidfile {{ redis_run_dir }}/redis-sentinel.pid
 logfile {{ redis_log_dir }}/sentinel.log
 dir {{redis_data_dir}}
-sentinel down-after-milliseconds mymaster 30000
+#sentinel monitor mymaster 127.0.0.1 6379 2
+#sentinel down-after-milliseconds mymaster 30000
 
 sentinel monitor mymaster {{ redis_master_ip }} 6379 2
 sentinel auth-pass mymaster Passw0rd!
