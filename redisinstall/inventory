@@ -1,0 +1,9 @@
+[redis]
+redissentinel01 host_name=redissentinel01
+redissentinel02 host_name=redissentinel02
+redissentinel03 host_name=redissentinel03
+
+[all:vars]
+host_key_checking=false
+ansible_ssh_user=root
+ansible_ssh_pass=Suncloud@2022

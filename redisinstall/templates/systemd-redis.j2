@@ -1,0 +1,14 @@
+[Unit]
+Description=Redis In-Memory Data Store
+After=network.target 
+
+[Service]
+#User=redis
+#Group=redis
+ExecStart=/data/redis-{{ redis_version }}/src/redis-server {{ redis_conf_dir }}/redis.conf
+ExecStop=/data/redis-{{ redis_version }}/src/redis-cli shutdown
+Type=forking
+Restart=always
+#Restart=on-failure
+[Install]
+WantedBy=multi-user.target
