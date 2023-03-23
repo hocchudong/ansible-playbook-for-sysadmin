@@ -96,3 +96,10 @@
         dest: "/etc/systemd/system/redis.service"
         mode: 0644
       become: true
+      
+    - name: Make sure a service unit is running
+      systemd:
+        name: redis
+        daemon_reload: true
+        state: started
+        
