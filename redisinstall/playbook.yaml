@@ -21,6 +21,7 @@
     redis_port: "6379"
     sentinel_port: "26379"
     redis_bind_loop: 127.0.0.1
+    redis_master_ip: 10.0.11.167
   
   tasks:
 
@@ -89,14 +90,23 @@
         dest: "{{ redis_conf_dir }}/redis.conf"
         mode: 0644
       become: true
-      
+      when: role_redis == 'master'
+
+    - name: Copy Redis template
+      template:
+        src: "slave-conf.j2"
+        dest: "{{ redis_conf_dir }}/redis.conf"
+        mode: 0644
+      become: true
+      when: role_redis == 'slave'       
+       
     - name: Setup Redis Systemd
       template:
         src: systemd-redis.j2
         dest: "/etc/systemd/system/redis.service"
         mode: 0644
       become: true
-      
+
     - name: Make sure a service unit is running
       systemd:
         name: redis

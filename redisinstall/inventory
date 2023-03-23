@@ -1,7 +1,11 @@
+redissentinel01 host_name=redissentinel01 role_redis=master
+redissentinel02 host_name=redissentinel02 role_redis=slave
+redissentinel03 host_name=redissentinel03 role_redis=slave
+
 [redis]
-redissentinel01 host_name=redissentinel01
-redissentinel02 host_name=redissentinel02
-redissentinel03 host_name=redissentinel03
+redissentinel01 host_name=redissentinel01 role_redis=master
+redissentinel02 host_name=redissentinel02 role_redis=slave
+redissentinel03 host_name=redissentinel03 role_redis=slave
 
 [all:vars]
 host_key_checking=false
