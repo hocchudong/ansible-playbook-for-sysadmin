@@ -112,4 +112,18 @@
         name: redis
         daemon_reload: true
         state: started
+
+    - name: Copy Redis template
+      template:
+        src: "sentinel-master.j2"
+        dest: "{{ redis_conf_dir }}/sentinel.conf"
+        mode: 0644
+      become: true
+      
         
+    - name: Setup Sentinel Systemd
+      template:
+        src: systemd-sentinel.j2
+        dest: "/etc/systemd/system/redis-sentinel.service"
+        mode: 0644
+      become: true        

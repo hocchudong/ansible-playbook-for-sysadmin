@@ -6,6 +6,10 @@ maxclients 40000
 supervised systemd
 daemonize yes
 
+masterauth "Passw0rd!"
+requirepass "Passw0rd!"
+replicaof {{ redis_master_ip }} 6379
+
 protected-mode yes
 port 6379
 tcp-backlog 511
@@ -30,7 +34,7 @@ repl-diskless-sync-delay 5
 repl-diskless-sync-max-replicas 0
 repl-diskless-load disabled
 repl-disable-tcp-nodelay no
-replica-priority 100
+replica-priority 200
 acllog-max-len 128
 lazyfree-lazy-eviction no
 lazyfree-lazy-expire no
