@@ -1,0 +1,16 @@
+---
+- name: Redis Cluster Install
+  hosts: redis
+  become: yes
+  become_user: root
+  gather_facts: no
+  vars:
+    hostname: '[% host_name %]'
+    ipv4: '{{ansible_default_ipv4.address}}'
+  
+  tasks:
+    - name: Download redis.rpm file
+      get_url:
+        url: http://10.0.11.173/tools/7.0.10.tar.gz
+        dest: /data/
+        mode: '0644'
