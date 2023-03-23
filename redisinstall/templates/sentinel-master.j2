@@ -1,6 +1,7 @@
 protected-mode no
 port 26379
-daemonize no
+daemonize yes
+bind 0.0.0.0
 pidfile {{ redis_run_dir }}/redis-sentinel.pid
 logfile {{ redis_log_dir }}/sentinel.log
 dir {{redis_data_dir}}
