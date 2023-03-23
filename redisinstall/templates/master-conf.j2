@@ -1,13 +1,10 @@
 bind 0.0.0.0
-dir {{redis_data_dir}}
-pidfile {{ redis_run_dir }}/redis_6379.pid
-logfile {{ redis_log_dir }}/redis.log
+dir /data/redis-{{ redis_version }}/data
+pidfile /data/redis-{{ redis_version }}/run/redis_6379.pid
+logfile /data/redis-{{ redis_version }}/log/redis.log
 maxclients 40000
 supervised systemd
 daemonize yes
-
-masterauth "Passw0rd!"
-requirepass "Passw0rd!"
 
 protected-mode yes
 port 6379
@@ -33,7 +30,7 @@ repl-diskless-sync-delay 5
 repl-diskless-sync-max-replicas 0
 repl-diskless-load disabled
 repl-disable-tcp-nodelay no
-replica-priority 200
+replica-priority 100
 acllog-max-len 128
 lazyfree-lazy-eviction no
 lazyfree-lazy-expire no
