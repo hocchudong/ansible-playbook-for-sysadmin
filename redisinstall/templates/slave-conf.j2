@@ -6,6 +6,10 @@ maxclients 40000
 supervised systemd
 daemonize yes
 
+masterauth "Passw0rd!"
+requirepass "Passw0rd!"
+replicaof {{ redis_master_ip }} 6379
+
 protected-mode yes
 port 6379
 tcp-backlog 511
@@ -76,4 +80,3 @@ aof-rewrite-incremental-fsync yes
 rdb-save-incremental-fsync yes
 jemalloc-bg-thread yes
 
-replicaof 10.1.49.25 6379
